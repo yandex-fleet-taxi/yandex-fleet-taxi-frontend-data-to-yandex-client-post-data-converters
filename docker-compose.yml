@@ -1,0 +1,19 @@
+version: '3.3'
+
+services:
+  composer:
+    build: ./docker/composer
+    volumes:
+      - .:/app
+    environment:
+      - COMPOSER_AUTH=${COMPOSER_AUTH}
+
+  tests:
+    build: ./docker/tests
+    working_dir: /app
+    environment:
+      - PHP_IDE_CONFIG=serverName=Docker
+    volumes:
+      - .:/app
+    entrypoint: ./vendor/bin/phpunit --bootstrap vendor/autoload.php
+    command: ['tests']

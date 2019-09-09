@@ -1,0 +1,37 @@
+{
+  "name": "likemusic/yandex-fleet-taxi-frontend-data-to-yandex-client-post-data-converters",
+  "description": "Convert frontend data to data for client for https://fleet.taxi.yandex.ru/",
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "license": "proprietary",
+  "require": {
+    "php": "^7.3",
+    "likemusic/yandex-fleet-taxi-client-contracts": "*",
+    "likemusic/yandex-fleet-taxi-frontend-data-contracts": "*"
+  },
+  "authors": [
+    {
+      "name": "Valerij Ivashchenko",
+      "email": "likemusicdev@gmail.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Likemusic\\YandexFleetTaxi\\FrontendData\\ToYandexClientPostDataConverters\\": "src/",
+      "Likemusic\\YandexFleetTaxi\\FrontendData\\ToYandexClientPostDataConverters\\Tests\\": "tests/"
+    }
+  },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "git@github.com:likemusic/yandex-fleet-taxi-client-contracts.git"
+    },
+    {
+      "type": "vcs",
+      "url": "git@github.com:likemusic/yandex-fleet-taxi-frontend-data-contracts.git"
+    }
+  ],
+  "require-dev": {
+    "phpunit/phpunit": "^8"
+  }
+}
