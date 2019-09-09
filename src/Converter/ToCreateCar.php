@@ -8,16 +8,16 @@ use Likemusic\YandexFleetTaxiClient\Contracts\PostDataKey\CreateCar\CargoHoldDim
 
 class ToCreateCar extends Base
 {
-    public function convert(array $headers, array $row, string $parkId): array
+    public function convert(array $data, string $parkId): array
     {
         $defaultValues = $this->getDefaultValues();
-        $mappedValues = $this->getMappedValues($headers, $row);
-        $calculatedValues = $this->getCalculatedValues($headers, $row, $parkId);
+        $mappedValues = $this->getMappedValues($data);
+        $calculatedValues = $this->getCalculatedValues($data, $parkId);
 
         return array_replace_recursive($defaultValues, $mappedValues, $calculatedValues);
     }
 
-    private function getCalculatedValues(array $headers, array $row, string $parkId)
+    private function getCalculatedValues(array $data, string $parkId)
     {
         return [
             CreateCarInterface::PARK_ID => $parkId,
@@ -55,7 +55,7 @@ class ToCreateCar extends Base
         ];
     }
 
-    private function getMappedValues(array $headers, array $row)
+    private function getMappedValues(array $data)
     {
         $mapping = [
 //            CreateCarInterface::AMENITIES => [],
@@ -85,7 +85,7 @@ class ToCreateCar extends Base
 //            CreateCarInterface::YEAR => 2017,
         ];
 
-        return $this->getValuesByRowNamesMapping($headers, $row, $mapping);
+        return $this->getValuesByRowNamesMapping($data, $mapping);
     }
 
     private function getTariffs(array $row): array
