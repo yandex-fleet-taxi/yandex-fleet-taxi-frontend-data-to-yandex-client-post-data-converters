@@ -42,13 +42,12 @@ class ToCreateDriverTest extends Base
                         ],
                     'first_name' => 'Валерий',
                     'last_name' => 'Иващенко',
-                    'middle_name' => 'Игроевич',
+                    'middle_name' => 'Игоревич',
                     'phones' =>
                         [
-                            '+7 (753) 330-12-95',
-                            '+7 (753) 330-12-95',
+                            '+77533301295',
+//                            '+7 (753) 330-12-95',
                         ],
-                    'work_status' => 'working',
                     'work_rule_id' => 'a6cb3fbe61a54ba28f8f8b5e35b286db',
                     'providers' =>
                         [
@@ -62,6 +61,11 @@ class ToCreateDriverTest extends Base
                     'check_message' => NULL,
                     'car_id' => NULL,
                     'fire_date' => NULL,
+                    'bank_accounts' => [],
+                    'emergency_person_contacts' => [],
+                    'identifications' => [],
+                    'primary_state_registration_number' => null,
+                    'tax_identification_number' => null,
                 ],
         ];
     }
