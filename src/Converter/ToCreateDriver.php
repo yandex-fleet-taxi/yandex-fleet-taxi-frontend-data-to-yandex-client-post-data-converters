@@ -50,10 +50,7 @@ class ToCreateDriver extends Base
             DriverProfileInterface::DRIVER_LICENSE => null,
             DriverProfileInterface::EMAIL => null,
             DriverProfileInterface::FIRE_DATE => null,
-//            DriverProfileInterface::FIRST_NAME => null,
             DriverProfileInterface::HIRE_DATE => '2019-09-01',
-//            DriverProfileInterface::LAST_NAME => null,
-//            DriverProfileInterface::MIDDLE_NAME => null,
 //            DriverProfileInterface::PHONES => null,
             DriverProfileInterface::PROVIDERS => ['yandex'],
             DriverProfileInterface::WORK_RULE_ID => 'a6cb3fbe61a54ba28f8f8b5e35b286db',//todo

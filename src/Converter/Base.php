@@ -9,6 +9,10 @@ class Base
         $ret = [];
 
         foreach ($mapping as $key => $columnName){
+            if (!array_key_exists($columnName, $data)) {
+                continue;
+            }
+
             $ret[$key] = $data[$columnName];
         }
 
