@@ -158,7 +158,7 @@ class ToCreateDriver extends Base
 //        ];
     }
 
-    private function getExpirationDate(array $data): string
+    private function getExpirationDate(array $data): ?string
     {
         if (!isset($data[FrontDriverLicenseInterface::EXPIRATION_DATE])) {
             return null;
@@ -178,7 +178,7 @@ class ToCreateDriver extends Base
         return implode('-', $chunks);
     }
 
-    private function getIssueDate(array $data): string
+    private function getIssueDate(array $data): ?string
     {
         $sheetValue = $data[FrontDriverLicenseInterface::ISSUE_DATE];
 
