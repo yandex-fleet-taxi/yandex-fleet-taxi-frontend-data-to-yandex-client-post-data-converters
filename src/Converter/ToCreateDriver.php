@@ -189,9 +189,13 @@ class ToCreateDriver extends Base
         return $this->getClientDateByTildaDate($sheetValue);
     }
 
-    private function getDriverLicenceNumber($data)
+    private function getDriverLicenceNumber($data): ?string
     {
-        $series = $data[FrontDriverLicenseInterface::SERIES];
+//        $series = $data[FrontDriverLicenseInterface::SERIES];
+        if (!isset($data[FrontDriverLicenseInterface::NUMBER])) {
+            return null;
+        }
+
         $number = $data[FrontDriverLicenseInterface::NUMBER];
 
         return "{$number}";
