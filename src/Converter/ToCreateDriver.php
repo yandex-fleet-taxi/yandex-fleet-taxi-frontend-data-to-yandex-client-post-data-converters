@@ -91,35 +91,71 @@ class ToCreateDriver extends Base
 
     private function getCalculatedValues(array $data): array
     {
-        return [
+        $ret = [];
+
+        if ($driverLicense = $this->getDriverLicencePostData($data)) {
+            $ret[DriverProfileInterface::DRIVER_LICENSE] = $driverLicense;
+        }
+
+        if ($phones = $this->getDriverPostDataDriverProfilePhones($data)) {
+            $ret[DriverProfileInterface::PHONES] = $phones;
+        }
+
+        return $ret;
+
+//        return [
 //            DriverProfileInterface::ADDRESS => null,
 //            DriverProfileInterface::CAR_ID => null,
 //            DriverProfileInterface::CHECK_MESSAGE => null,
 //            DriverProfileInterface::COMMENT => null,
 //            DriverProfileInterface::DEAF => null,
-            DriverProfileInterface::DRIVER_LICENSE => $this->getDriverLicencePostData($data),
+//            DriverProfileInterface::DRIVER_LICENSE => $this->getDriverLicencePostData($data),
 //            DriverProfileInterface::EMAIL => null,
 //            DriverProfileInterface::FIRE_DATE => null,
 //            DriverProfileInterface::FIRST_NAME => null,
 //            DriverProfileInterface::HIRE_DATE => null,
 //            DriverProfileInterface::LAST_NAME => null,
 //            DriverProfileInterface::MIDDLE_NAME => null,
-            DriverProfileInterface::PHONES => $this->getDriverPostDataDriverProfilePhones($data),
+//            DriverProfileInterface::PHONES => $this->getDriverPostDataDriverProfilePhones($data),
 //            DriverProfileInterface::PROVIDERS => $this->getDriverPostDataDriverProfileProviders($row),
 //            DriverProfileInterface::WORK_RULE_ID => null,
 //            DriverProfileInterface::WORK_STATUS => null,
-        ];
+//        ];
     }
 
     private function getDriverLicencePostData($data)
     {
-        return [
-            DriverLicenceInterface::BIRTH_DATE => null,
-            DriverLicenceInterface::COUNTRY => 'rus',//$this->getDriverLicenceCountry($rowNames, $row),
-            DriverLicenceInterface::EXPIRATION_DATE => $this->getExpirationDate($data),
-            DriverLicenceInterface::ISSUE_DATE => $this->getIssueDate($data),
-            DriverLicenceInterface::NUMBER => $this->getDriverLicenceNumber($data),
-        ];
+        $ret = [];
+
+//        if ($birthData = $this->getDriverBirdthDate()) {
+//            $ret[DriverLicenceInterface::BIRTH_DATE] = $birthData;
+//        }
+
+//        if ($country = $this->getDriverLicenceCountry()) {
+//            $ret[DriverLicenceInterface::COUNTRY] = $country;
+//        }
+
+        if ($expirationDate = $this->getExpirationDate($data)) {
+            $ret[DriverLicenceInterface::EXPIRATION_DATE ] = $expirationDate;
+        }
+
+        if ($issueDate = $this->getIssueDate($data)) {
+            $ret[DriverLicenceInterface::ISSUE_DATE] = $issueDate;
+        }
+
+        if ($number = $this->getDriverLicenceNumber($data)) {
+            $ret[DriverLicenceInterface::NUMBER] = $number;
+        }
+
+        return $ret;
+
+//        return [
+//            DriverLicenceInterface::BIRTH_DATE => null,
+//            DriverLicenceInterface::COUNTRY => 'rus',//$this->getDriverLicenceCountry($rowNames, $row),
+//            DriverLicenceInterface::EXPIRATION_DATE => $this->getExpirationDate($data),
+//            DriverLicenceInterface::ISSUE_DATE => $this->getIssueDate($data),
+//            DriverLicenceInterface::NUMBER => $this->getDriverLicenceNumber($data),
+//        ];
     }
 
     private function getExpirationDate(array $data): string
