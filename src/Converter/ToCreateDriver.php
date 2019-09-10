@@ -160,6 +160,10 @@ class ToCreateDriver extends Base
 
     private function getExpirationDate(array $data): string
     {
+        if (!isset($data[FrontDriverLicenseInterface::EXPIRATION_DATE])) {
+            return null;
+        }
+
         $sheetValue = $data[FrontDriverLicenseInterface::EXPIRATION_DATE];
 
         return $this->getClientDateByTildaDate($sheetValue);
