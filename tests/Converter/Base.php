@@ -10,9 +10,4 @@ class Base extends TestCase
     {
         return Fixture::DATA;
     }
-
-    protected function getTestRow()
-    {
-        return Fixture::ROW;
-    }
 }

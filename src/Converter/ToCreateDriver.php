@@ -2,12 +2,12 @@
 
 namespace Likemusic\YandexFleetTaxi\FrontendData\ToYandexClientPostDataConverters\Converter;
 
-use Likemusic\YandexFleetTaxi\FrontendData\Contracts\CreateDriver\DriverProfileInterface as DriverProfileColumnNameInterface;
+use Likemusic\YandexFleetTaxi\FrontendData\Contracts\DriverInterface as FrontDriverInterface;
+use Likemusic\YandexFleetTaxi\FrontendData\Contracts\DriverLicenseInterface as FrontDriverLicenseInterface;
 use Likemusic\YandexFleetTaxiClient\Contracts\PostDataKey\CreateDriver\AccountsInterface;
 use Likemusic\YandexFleetTaxiClient\Contracts\PostDataKey\CreateDriver\DriverProfile\DriverLicenceInterface;
 use Likemusic\YandexFleetTaxiClient\Contracts\PostDataKey\CreateDriver\DriverProfileInterface;
 use Likemusic\YandexFleetTaxiClient\Contracts\PostDataKey\CreateDriverInterface;
-use Likemusic\YandexFleetTaxi\FrontendData\Contracts\CreateDriver\DriverProfile\DriverLicenceInterface as DriverLicenceColumnInterface;
 
 class ToCreateDriver extends Base
 {
@@ -78,10 +78,10 @@ class ToCreateDriver extends Base
 //            DriverProfileInterface::DRIVER_LICENSE => $this->getDriverPostDataDriverProfileDriverLicence($row),
 //            DriverProfileInterface::EMAIL => null,
 //            DriverProfileInterface::FIRE_DATE => null,
-            DriverProfileInterface::FIRST_NAME => DriverProfileColumnNameInterface::FIRST_NAME,
+            DriverProfileInterface::FIRST_NAME => FrontDriverInterface::FIRST_NAME,
 //            DriverProfileInterface::HIRE_DATE => null,
-            DriverProfileInterface::LAST_NAME => DriverProfileColumnNameInterface::LAST_NAME,
-            DriverProfileInterface::MIDDLE_NAME => DriverProfileColumnNameInterface::MIDDLE_NAME,
+            DriverProfileInterface::LAST_NAME => FrontDriverInterface::LAST_NAME,
+            DriverProfileInterface::MIDDLE_NAME => FrontDriverInterface::MIDDLE_NAME,
 //            DriverProfileInterface::PHONES => $this->getDriverPostDataDriverProfilePhones($row),
 //            DriverProfileInterface::PROVIDERS => $this->getDriverPostDataDriverProfileProviders($row),
 //            DriverProfileInterface::WORK_RULE_ID => null,
@@ -114,9 +114,51 @@ class ToCreateDriver extends Base
         ];
     }
 
+    private function getDriverLicencePostData($data)
+    {
+        return [
+            DriverLicenceInterface::BIRTH_DATE => null,
+            DriverLicenceInterface::COUNTRY => 'rus',//$this->getDriverLicenceCountry($rowNames, $row),
+            DriverLicenceInterface::EXPIRATION_DATE => $this->getExpirationDate($data),
+            DriverLicenceInterface::ISSUE_DATE => $this->getIssueDate($data),
+            DriverLicenceInterface::NUMBER => $this->getDriverLicenceNumber($data),
+        ];
+    }
+
+    private function getExpirationDate(array $data): string
+    {
+        $sheetValue = $data[FrontDriverLicenseInterface::EXPIRATION_DATE];
+
+        return $this->getClientDateByTildaDate($sheetValue);
+    }
+
+    private function getClientDateByTildaDate(string $sheetDate):string
+    {
+        $chunks = explode('.', $sheetDate);
+
+        $chunks = array_reverse($chunks);
+
+        return implode('-', $chunks);
+    }
+
+    private function getIssueDate(array $data): string
+    {
+        $sheetValue = $data[FrontDriverLicenseInterface::ISSUE_DATE];
+
+        return $this->getClientDateByTildaDate($sheetValue);
+    }
+
+    private function getDriverLicenceNumber($data)
+    {
+        $series = $data[FrontDriverLicenseInterface::SERIES];
+        $number = $data[FrontDriverLicenseInterface::NUMBER];
+
+        return "{$number}";
+    }
+
     private function getDriverPostDataDriverProfilePhones($data)
     {
-        $rawPhone = $data[DriverProfileColumnNameInterface::PHONE];
+        $rawPhone = $data[FrontDriverInterface::WORK_PHONE];
         $sanitizedPhone = $this->sanitizePhone($rawPhone);
 
         return [
@@ -133,54 +175,12 @@ class ToCreateDriver extends Base
         return "+{$phone}";
     }
 
-    private function getDriverLicencePostData($data)
-    {
-        return [
-            DriverLicenceInterface::BIRTH_DATE => null,
-            DriverLicenceInterface::COUNTRY => 'rus',//$this->getDriverLicenceCountry($rowNames, $row),
-            DriverLicenceInterface::EXPIRATION_DATE => $this->getExpirationDate($data),
-            DriverLicenceInterface::ISSUE_DATE => $this->getIssueDate($data),
-            DriverLicenceInterface::NUMBER => $this->getDriverLicenceNumber($data),
-        ];
-    }
-
-    private function getExpirationDate(array $data): string
-    {
-        $sheetValue = $data[DriverLicenceColumnInterface::EXPIRATION_DATE];
-
-        return $this->getClientDateByTildaDate($sheetValue);
-    }
-
-    private function getIssueDate(array $data): string
-    {
-        $sheetValue = $data[DriverLicenceColumnInterface::ISSUE_DATE];
-
-        return $this->getClientDateByTildaDate($sheetValue);
-    }
-
-    private function getClientDateByTildaDate(string $sheetDate):string
-    {
-        $chunks = explode('.', $sheetDate);
-
-        $chunks = array_reverse($chunks);
-
-        return implode('-', $chunks);
-    }
-
     private function getDriverLicenceCountry($rowNames, $row)
     {
         //todo
-        $countryRu = $this->getValueByRowName($rowNames, $row, DriverLicenceColumnInterface::COUNTRY);
+        $countryRu = $this->getValueByRowName($rowNames, $row, FrontDriverLicenseInterface::ISSUE_COUNTRY);
 
         return $this->getDriverLicenceCountryCodeByCountryRussianName($countryRu);
-    }
-
-    private function getDriverLicenceNumber($data)
-    {
-        $series = $data[DriverLicenceColumnInterface::SERIES];
-        $number = $data[DriverLicenceColumnInterface::NUMBER];
-
-        return "{$number}";
     }
 
     private function getDriverPostDataDriverProfileProviders($row)

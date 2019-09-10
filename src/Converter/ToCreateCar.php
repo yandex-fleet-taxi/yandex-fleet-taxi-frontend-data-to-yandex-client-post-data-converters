@@ -2,9 +2,9 @@
 
 namespace Likemusic\YandexFleetTaxi\FrontendData\ToYandexClientPostDataConverters\Converter;
 
-use Likemusic\YandexFleetTaxi\FrontendData\Contracts\CreateCar\CarInterface;
-use Likemusic\YandexFleetTaxiClient\Contracts\PostDataKey\CreateCarInterface;
+use Likemusic\YandexFleetTaxi\FrontendData\Contracts\CarInterface as FrontCarInterface;
 use Likemusic\YandexFleetTaxiClient\Contracts\PostDataKey\CreateCar\CargoHoldDimensionsInterface;
+use Likemusic\YandexFleetTaxiClient\Contracts\PostDataKey\CreateCarInterface;
 
 class ToCreateCar extends Base
 {
@@ -15,13 +15,6 @@ class ToCreateCar extends Base
         $calculatedValues = $this->getCalculatedValues($data, $parkId);
 
         return array_replace_recursive($defaultValues, $mappedValues, $calculatedValues);
-    }
-
-    private function getCalculatedValues(array $data, string $parkId)
-    {
-        return [
-            CreateCarInterface::PARK_ID => $parkId,
-        ];//todo
     }
 
     private function getDefaultValues()
@@ -61,7 +54,7 @@ class ToCreateCar extends Base
 //            CreateCarInterface::AMENITIES => [],
 //            CreateCarInterface::BODY_NUMBER => null,
 //            CreateCarInterface::BOOSTER_COUNT => 0,
-            CreateCarInterface::BRAND => CarInterface::BRAND,
+            CreateCarInterface::BRAND => FrontCarInterface::BRAND,
 //            CreateCarInterface::CALLSIGN => 'тест',
 //            CreateCarInterface::CARGO_HOLD_DIMENSIONS => $this->getCargoHoldDimensions($row),
 //            CreateCarInterface::CARGO_LOADERS => 0,
@@ -72,8 +65,8 @@ class ToCreateCar extends Base
 //            CreateCarInterface::CHASSIS => null,
 //            CreateCarInterface::COLOR => 'Черный',//todo
 //            CreateCarInterface::LOG_TIME => 350, //todo: what is it?
-            CreateCarInterface::MODEL => CarInterface::MODEL,
-            CreateCarInterface::NUMBER => CarInterface::NUMBER,
+            CreateCarInterface::MODEL => FrontCarInterface::MODEL,
+            CreateCarInterface::NUMBER => FrontCarInterface::NUMBER,
 //            CreateCarInterface::PARK_ID => null,
 //            CreateCarInterface::PERMIT => null,
 //            CreateCarInterface::REGISTRATION_CERT => null,
@@ -81,11 +74,18 @@ class ToCreateCar extends Base
 //            CreateCarInterface::STATUS => 'working',//todo
 //            CreateCarInterface::TARIFFS => [],
 //            CreateCarInterface::TRANSMISSION => 'unknown',
-            CreateCarInterface::VIN => CarInterface::VIN,
+            CreateCarInterface::VIN => FrontCarInterface::VIN,
 //            CreateCarInterface::YEAR => 2017,
         ];
 
         return $this->getValuesByRowNamesMapping($data, $mapping);
+    }
+
+    private function getCalculatedValues(array $data, string $parkId)
+    {
+        return [
+            CreateCarInterface::PARK_ID => $parkId,
+        ];//todo
     }
 
     private function getTariffs(array $row): array
