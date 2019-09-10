@@ -201,8 +201,12 @@ class ToCreateDriver extends Base
         return "{$number}";
     }
 
-    private function getDriverPostDataDriverProfilePhones($data)
+    private function getDriverPostDataDriverProfilePhones($data): ?array
     {
+        if (!isset($data[FrontDriverInterface::WORK_PHONE])) {
+            return null;
+        }
+
         $rawPhone = $data[FrontDriverInterface::WORK_PHONE];
         $sanitizedPhone = $this->sanitizePhone($rawPhone);
 
