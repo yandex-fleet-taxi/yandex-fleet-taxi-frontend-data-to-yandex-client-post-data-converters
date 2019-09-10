@@ -180,6 +180,10 @@ class ToCreateDriver extends Base
 
     private function getIssueDate(array $data): ?string
     {
+        if (!isset($data[FrontDriverLicenseInterface::ISSUE_DATE])) {
+            return null;
+        }
+
         $sheetValue = $data[FrontDriverLicenseInterface::ISSUE_DATE];
 
         return $this->getClientDateByTildaDate($sheetValue);
