@@ -8,6 +8,8 @@ use Likemusic\YandexFleetTaxiClient\Contracts\PostDataKey\CreateDriver\AccountsI
 use Likemusic\YandexFleetTaxiClient\Contracts\PostDataKey\CreateDriver\DriverProfile\DriverLicenceInterface;
 use Likemusic\YandexFleetTaxiClient\Contracts\PostDataKey\CreateDriver\DriverProfileInterface;
 use Likemusic\YandexFleetTaxiClient\Contracts\PostDataKey\CreateDriverInterface;
+use Likemusic\YandexFleetTaxi\FrontendData\Contracts\DriverLicense\IssueCountryInterface as FrontDriverLicenseIssueCountryInterface;
+use Likemusic\YandexFleetTaxiClient\Contracts\References\DriverLicenseIssueCountryCodeInterface;
 
 class ToCreateDriver extends Base
 {
@@ -42,25 +44,25 @@ class ToCreateDriver extends Base
     private function getDefaultValues()
     {
         return [
-            DriverProfileInterface::ADDRESS => null,
-            DriverProfileInterface::CAR_ID => null,
-            DriverProfileInterface::CHECK_MESSAGE => null,
-            DriverProfileInterface::COMMENT => null,
-            DriverProfileInterface::DEAF => null,
-            DriverProfileInterface::DRIVER_LICENSE => null,
-            DriverProfileInterface::EMAIL => null,
-            DriverProfileInterface::FIRE_DATE => null,
-            DriverProfileInterface::HIRE_DATE => '2019-09-01',
+//            DriverProfileInterface::ADDRESS => null,
+//            DriverProfileInterface::CAR_ID => null,
+//            DriverProfileInterface::CHECK_MESSAGE => null,
+//            DriverProfileInterface::COMMENT => null,
+//            DriverProfileInterface::DEAF => null,
+//            DriverProfileInterface::DRIVER_LICENSE => null,
+//            DriverProfileInterface::EMAIL => null,
+//            DriverProfileInterface::FIRE_DATE => null,
+//            DriverProfileInterface::HIRE_DATE => '2019-09-01',
 //            DriverProfileInterface::PHONES => null,
             DriverProfileInterface::PROVIDERS => ['yandex'],
             DriverProfileInterface::WORK_RULE_ID => 'a6cb3fbe61a54ba28f8f8b5e35b286db',//todo
 //            DriverProfileInterface::WORK_STATUS => WorkStatusIdInterface::WORKING,
 
-            DriverProfileInterface::BANK_ACCOUNTS => [],
-            DriverProfileInterface::EMERGENCY_PERSON_CONTACTS => [],
-            DriverProfileInterface::IDENTIFICATIONS => [],
-            DriverProfileInterface::PRIMARY_STATE_REGISTRATION_NUMBER => null,
-            DriverProfileInterface::TAX_IDENTIFICATION_NUMBER => null,
+//            DriverProfileInterface::BANK_ACCOUNTS => [],
+//            DriverProfileInterface::EMERGENCY_PERSON_CONTACTS => [],
+//            DriverProfileInterface::IDENTIFICATIONS => [],
+//            DriverProfileInterface::PRIMARY_STATE_REGISTRATION_NUMBER => null,
+//            DriverProfileInterface::TAX_IDENTIFICATION_NUMBER => null,
         ];
     }
 
@@ -127,13 +129,13 @@ class ToCreateDriver extends Base
     {
         $ret = [];
 
-//        if ($birthData = $this->getDriverBirdthDate()) {
-//            $ret[DriverLicenceInterface::BIRTH_DATE] = $birthData;
-//        }
+        if ($birthData = $this->getDriverBirthDate($data)) {
+            $ret[DriverLicenceInterface::BIRTH_DATE] = $birthData;
+        }
 
-//        if ($country = $this->getDriverLicenceCountry()) {
-//            $ret[DriverLicenceInterface::COUNTRY] = $country;
-//        }
+        if ($country = $this->getDriverLicenceIssueCountry($data)) {
+            $ret[DriverLicenceInterface::COUNTRY] = $country;
+        }
 
         if ($expirationDate = $this->getExpirationDate($data)) {
             $ret[DriverLicenceInterface::EXPIRATION_DATE ] = $expirationDate;
@@ -158,15 +160,57 @@ class ToCreateDriver extends Base
 //        ];
     }
 
-    private function getExpirationDate(array $data): ?string
+
+    private function getDriverLicenceIssueCountry(array $data)
     {
-        if (!isset($data[FrontDriverLicenseInterface::EXPIRATION_DATE])) {
+        if (!isset($data[FrontDriverLicenseInterface::ISSUE_COUNTRY])) {
             return null;
         }
 
-        $sheetValue = $data[FrontDriverLicenseInterface::EXPIRATION_DATE];
+        $frontCountry = $data[FrontDriverLicenseInterface::ISSUE_COUNTRY];
+
+        return $this->getYandexClientCountryCodeByFrontCountry($frontCountry);
+    }
+
+    private function getYandexClientCountryCodeByFrontCountry($frontCountry)
+    {
+        $mapping = [
+            FrontDriverLicenseIssueCountryInterface::RUSSIA => DriverLicenseIssueCountryCodeInterface::RUSSIA,
+            FrontDriverLicenseIssueCountryInterface::BELARUS => DriverLicenseIssueCountryCodeInterface::BELARUS,
+            FrontDriverLicenseIssueCountryInterface::KAZAKHSTAN => DriverLicenseIssueCountryCodeInterface::KAZAKHSTAN,
+            FrontDriverLicenseIssueCountryInterface::KYRGYZSTAN => DriverLicenseIssueCountryCodeInterface::KYRGYZSTAN,
+            //todo
+//            'Абхазия',
+//            'Южная Осетия'
+        //todo: Что со всеми остальными странами?
+        ];
+
+        if (!array_key_exists($frontCountry, $mapping)) {
+            throw new \InvalidArgumentException('Unknown frontend county name: ' . $frontCountry);
+        }
+
+        return $mapping[$frontCountry];
+    }
+
+    private function getDriverBirthDate(array $data): ?string
+    {
+        return $this->getClientDataByKey($data, FrontDriverInterface::BIRTH_DATE);
+    }
+
+    private function getClientDataByKey(array $data, string $key)
+    {
+        if (!isset($data[$key])) {
+            return null;
+        }
+
+        $sheetValue = $data[$key];
 
         return $this->getClientDateByTildaDate($sheetValue);
+    }
+
+    private function getExpirationDate(array $data): ?string
+    {
+        return $this->getClientDataByKey($data, FrontDriverLicenseInterface::EXPIRATION_DATE);
     }
 
     private function getClientDateByTildaDate(string $sheetDate):string
@@ -180,18 +224,14 @@ class ToCreateDriver extends Base
 
     private function getIssueDate(array $data): ?string
     {
-        if (!isset($data[FrontDriverLicenseInterface::ISSUE_DATE])) {
-            return null;
-        }
-
-        $sheetValue = $data[FrontDriverLicenseInterface::ISSUE_DATE];
-
-        return $this->getClientDateByTildaDate($sheetValue);
+        return $this->getClientDataByKey($data, FrontDriverLicenseInterface::ISSUE_DATE);
     }
 
     private function getDriverLicenceNumber($data): ?string
     {
-//        $series = $data[FrontDriverLicenseInterface::SERIES];
+        //todo: использовать серию из отдельного поля?
+
+        //$series = $data[FrontDriverLicenseInterface::SERIES];
         if (!isset($data[FrontDriverLicenseInterface::NUMBER])) {
             return null;
         }
@@ -203,18 +243,26 @@ class ToCreateDriver extends Base
 
     private function getDriverPostDataDriverProfilePhones($data): ?array
     {
-        if (!isset($data[FrontDriverInterface::WORK_PHONE])) {
+        if (!$sanitizedPhone = $this->getSanitizedPhoneByKey($data, FrontDriverInterface::WORK_PHONE)) {
+            return null;
+        };
+
+//TODO: Нужно ли добавлять второй номер к номерам яндекса? Через админку на данный момент можно добавить только один,
+//но api позволяет добавить несколько.
+        return [
+            $sanitizedPhone,
+        ];
+    }
+
+    private function getSanitizedPhoneByKey($data, $key)
+    {
+        if (!isset($data[$key])) {
             return null;
         }
 
-        $rawPhone = $data[FrontDriverInterface::WORK_PHONE];
-        $sanitizedPhone = $this->sanitizePhone($rawPhone);
+        $rawPhone = $data[$key];
 
-        return [
-            $sanitizedPhone,
-//TODO: Нужно ли добавлять второй номер к номерам яндекса? Через админку на данный момент можно добавить только один,
-//но api позволяет добавить несколько.
-        ];
+        return $this->sanitizePhone($rawPhone);
     }
 
     private function sanitizePhone(string $rawPhone)
