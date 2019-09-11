@@ -100,7 +100,7 @@ class ToCreateDriver extends Base
             $ret[DriverProfileInterface::DRIVER_LICENSE] = $driverLicense;
         }
 
-        if ($phones = $this->getDriverPostDataDriverProfilePhones($data)) {
+        if ($phones = $this->getDriverPhones($data)) {
             $ret[DriverProfileInterface::PHONES] = $phones;
         }
 
@@ -235,7 +235,7 @@ class ToCreateDriver extends Base
         return $this->getClientDataByKey($data, FrontDriverLicenseInterface::ISSUE_DATE);
     }
 
-    private function getDriverLicenceNumber($data): ?string
+    public function getDriverLicenceNumber($data): ?string
     {
         //todo: использовать серию из отдельного поля?
 
@@ -249,7 +249,7 @@ class ToCreateDriver extends Base
         return "{$number}";
     }
 
-    private function getDriverPostDataDriverProfilePhones($data): ?array
+    public function getDriverPhones($data): ?array
     {
         if (!$sanitizedPhone = $this->getSanitizedPhoneByKey($data, FrontDriverInterface::WORK_PHONE)) {
             return null;
