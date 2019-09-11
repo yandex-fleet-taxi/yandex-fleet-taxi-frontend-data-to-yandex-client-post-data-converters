@@ -8,6 +8,6 @@ class Base extends TestCase
 {
     protected function getTestData()
     {
-        return Fixture::DATA;
+        return Fixture::FRONT_DATA;
     }
 }
