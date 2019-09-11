@@ -54,11 +54,12 @@ interface Fixture
                         '+77533301295',
 //                            '+7 (753) 330-12-95',
                     ],
-                'work_rule_id' => 'a6cb3fbe61a54ba28f8f8b5e35b286db',
                 'providers' =>
                     [
                         0 => 'yandex',
                     ],
+                'work_rule_id' => 'a6cb3fbe61a54ba28f8f8b5e35b286db',
+                'balance_deny_onlycard' => false,
 //                    'hire_date' => '2019-09-01',
 //                    'deaf' => NULL,
 //                    'email' => NULL,

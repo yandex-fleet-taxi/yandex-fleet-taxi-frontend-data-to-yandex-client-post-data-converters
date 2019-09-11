@@ -56,6 +56,7 @@ class ToCreateDriver extends Base
 //            DriverProfileInterface::PHONES => null,
             DriverProfileInterface::PROVIDERS => ['yandex'],
             DriverProfileInterface::WORK_RULE_ID => 'a6cb3fbe61a54ba28f8f8b5e35b286db',//todo
+            DriverProfileInterface::BALANCE_DENY_ONLYCARD => false,
 //            DriverProfileInterface::WORK_STATUS => WorkStatusIdInterface::WORKING,
 
 //            DriverProfileInterface::BANK_ACCOUNTS => [],
