@@ -26,6 +26,9 @@ class ToCreateDriverTest extends Base
 
     private function getExpectedDriverPostData()
     {
-        return Fixture::EXPECTED_CREATE_DRIVER_DATA;
+        $expectedDriverData = Fixture::EXPECTED_CREATE_DRIVER_DATA;
+        $expectedDriverData['driver_profile']['hire_date'] = date('Y-m-d');
+
+        return $expectedDriverData;
     }
 }
