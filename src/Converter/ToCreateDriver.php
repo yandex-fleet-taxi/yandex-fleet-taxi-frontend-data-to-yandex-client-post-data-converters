@@ -104,6 +104,8 @@ class ToCreateDriver extends Base
             $ret[DriverProfileInterface::PHONES] = $phones;
         }
 
+        $ret[DriverProfileInterface::HIRE_DATE] = $this->getHireDate();
+
         return $ret;
 
 //        return [
@@ -207,6 +209,11 @@ class ToCreateDriver extends Base
         $sheetValue = $data[$key];
 
         return $this->getClientDateByTildaDate($sheetValue);
+    }
+
+    private function getHireDate()
+    {
+        return date('Y-m-d');
     }
 
     private function getExpirationDate(array $data): ?string
