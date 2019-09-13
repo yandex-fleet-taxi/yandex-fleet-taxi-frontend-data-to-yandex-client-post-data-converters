@@ -3,71 +3,46 @@
 namespace Likemusic\YandexFleetTaxi\FrontendData\ToYandexClientPostDataConverters\Converter;
 
 use Likemusic\YandexFleetTaxi\FrontendData\Contracts\DriverInterface as FrontDriverInterface;
+use Likemusic\YandexFleetTaxi\FrontendData\Contracts\DriverLicense\IssueCountryInterface as FrontDriverLicenseIssueCountryInterface;
 use Likemusic\YandexFleetTaxi\FrontendData\Contracts\DriverLicenseInterface as FrontDriverLicenseInterface;
-use Likemusic\YandexFleetTaxiClient\Contracts\PostDataKey\CreateDriver\AccountsInterface;
 use Likemusic\YandexFleetTaxiClient\Contracts\PostDataKey\CreateDriver\DriverProfile\DriverLicenceInterface;
 use Likemusic\YandexFleetTaxiClient\Contracts\PostDataKey\CreateDriver\DriverProfileInterface;
 use Likemusic\YandexFleetTaxiClient\Contracts\PostDataKey\CreateDriverInterface;
-use Likemusic\YandexFleetTaxi\FrontendData\Contracts\DriverLicense\IssueCountryInterface as FrontDriverLicenseIssueCountryInterface;
 use Likemusic\YandexFleetTaxiClient\Contracts\References\DriverLicenseIssueCountryCodeInterface;
 
 class ToCreateDriver extends Base
 {
-    const DEFAULT_BALANCE_LIMIT = 5;
+    public function convert(array $data, $defaultValues): array
+    {
+        $mappedValues = $this->getMappedValues($data);
+        $calculatedValues = $this->getCalculatedValues($data);
 
-    public function convert(array $data): array
+        return array_merge_recursive($defaultValues, $mappedValues, $calculatedValues);
+    }
+
+    private function getMappedValues($data)
     {
         return [
-            CreateDriverInterface::ACCOUNTS => $this->getDriverPostDataAccounts(),
-            CreateDriverInterface::DRIVER_PROFILE => $this->getDriverPostDataDriverProfile($data),
+            CreateDriverInterface::DRIVER_PROFILE => $this->getMappedValuesDriver($data),
         ];
     }
 
-    private function getDriverPostDataAccounts()
+    private function getCalculatedValues($data)
     {
-        $defaultBalanceLimit = self::DEFAULT_BALANCE_LIMIT;
-
         return [
-            AccountsInterface::BALANCE_LIMIT => "{$defaultBalanceLimit}",
+            CreateDriverInterface::DRIVER_PROFILE => $this->getCalculatedValuesDriver($data),
         ];
     }
 
     private function getDriverPostDataDriverProfile(array $data)
     {
-        $defaultValues = $this->getDefaultValues();
-        $mappedValues = $this->getMappedValues($data);
-        $calculatedValues = $this->getCalculatedValues($data);
+        $mappedValues = $this->getMappedValuesDriver($data);
+        $calculatedValues = $this->getCalculatedValuesDriver($data);
 
-        return array_replace_recursive($defaultValues, $mappedValues, $calculatedValues);
+        return array_replace_recursive($mappedValues, $calculatedValues);
     }
 
-    private function getDefaultValues()
-    {
-        return [
-//            DriverProfileInterface::ADDRESS => null,
-//            DriverProfileInterface::CAR_ID => null,
-//            DriverProfileInterface::CHECK_MESSAGE => null,
-//            DriverProfileInterface::COMMENT => null,
-//            DriverProfileInterface::DEAF => null,
-//            DriverProfileInterface::DRIVER_LICENSE => null,
-//            DriverProfileInterface::EMAIL => null,
-//            DriverProfileInterface::FIRE_DATE => null,
-//            DriverProfileInterface::HIRE_DATE => '2019-09-01',
-//            DriverProfileInterface::PHONES => null,
-            DriverProfileInterface::PROVIDERS => ['yandex'],
-            DriverProfileInterface::WORK_RULE_ID => 'a6cb3fbe61a54ba28f8f8b5e35b286db',//todo
-            DriverProfileInterface::BALANCE_DENY_ONLYCARD => false,
-//            DriverProfileInterface::WORK_STATUS => WorkStatusIdInterface::WORKING,
-
-//            DriverProfileInterface::BANK_ACCOUNTS => [],
-//            DriverProfileInterface::EMERGENCY_PERSON_CONTACTS => [],
-//            DriverProfileInterface::IDENTIFICATIONS => [],
-//            DriverProfileInterface::PRIMARY_STATE_REGISTRATION_NUMBER => null,
-//            DriverProfileInterface::TAX_IDENTIFICATION_NUMBER => null,
-        ];
-    }
-
-    private function getMappedValues(array $data)
+    private function getMappedValuesDriver(array $data)
     {
         $mapping = [
 //            DriverProfileInterface::ADDRESS => null,
@@ -92,7 +67,7 @@ class ToCreateDriver extends Base
         return $this->getValuesByRowNamesMapping($data, $mapping);
     }
 
-    private function getCalculatedValues(array $data): array
+    private function getCalculatedValuesDriver(array $data): array
     {
         $ret = [];
 

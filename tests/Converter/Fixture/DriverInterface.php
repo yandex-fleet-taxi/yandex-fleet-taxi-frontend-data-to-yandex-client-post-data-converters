@@ -49,4 +49,20 @@ interface DriverInterface
 //                    'tax_identification_number' => null,
             ],
     ];
+
+    const DEFAULT_VALUES = [
+        'accounts' => [
+            'balance_limit' => 5,
+        ],
+
+        'driver_profile' => [
+            'providers' => [
+                'yandex'
+            ],
+
+            'work_rule_id' => 'a6cb3fbe61a54ba28f8f8b5e35b286db',
+
+            'balance_deny_onlycard' => false,
+        ],
+    ];
 }

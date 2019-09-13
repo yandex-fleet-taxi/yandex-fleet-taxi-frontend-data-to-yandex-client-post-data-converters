@@ -10,18 +10,17 @@ class ToCreateDriverTest extends Base
     public function testConvert()
     {
         $testData = $this->getTestData();
+        $defaultValues = $this->getTestDefaultValues();
         $converter = new ToCreateDriverConverter();
-        $driverPostData = $converter->convert($testData);
-
-        $this->assertIsArray($driverPostData);
-        $this->assertArrayHasKey('accounts', $driverPostData);
-        $this->assertIsArray($driverPostData['accounts']);
-
-        $this->assertArrayHasKey('driver_profile', $driverPostData);
-        $this->assertIsArray($driverPostData['driver_profile']);
+        $driverPostData = $converter->convert($testData, $defaultValues);
 
         $expectedDriverPostData = $this->getExpectedDriverPostData();
         $this->assertEquals($expectedDriverPostData, $driverPostData);
+    }
+
+    private function getTestDefaultValues()
+    {
+        return DriverInterface::DEFAULT_VALUES;
     }
 
     private function getExpectedDriverPostData()
