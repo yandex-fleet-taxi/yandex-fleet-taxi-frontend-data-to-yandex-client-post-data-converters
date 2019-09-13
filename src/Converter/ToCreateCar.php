@@ -8,83 +8,54 @@ use Likemusic\YandexFleetTaxiClient\Contracts\PostDataKey\CreateCarInterface;
 
 class ToCreateCar extends Base
 {
-    public function convert(array $data, string $parkId): array
+    public function convert(array $data, $defaultValues = []): array
     {
-        $defaultValues = $this->getDefaultValues();
         $mappedValues = $this->getMappedValues($data);
-        $calculatedValues = $this->getCalculatedValues($data, $parkId);
+        $calculatedValues = $this->getCalculatedValues($data);
 
         return array_replace_recursive($defaultValues, $mappedValues, $calculatedValues);
-    }
-
-    private function getDefaultValues()
-    {
-        return [
-            CreateCarInterface::AMENITIES => [],
-            CreateCarInterface::BODY_NUMBER => null,
-            CreateCarInterface::BOOSTER_COUNT => 0,
-//            CreateCarInterface::BRAND => null,
-            CreateCarInterface::CALLSIGN => 'тест',
-//            CreateCarInterface::CARGO_HOLD_DIMENSIONS => $this->getCargoHoldDimensions($row),
-            CreateCarInterface::CARGO_LOADERS => 0,
-            CreateCarInterface::CARRIER_PERMIT_OWNER_ID => null,
-            CreateCarInterface::CARRYING_CAPACITY => null,
-            CreateCarInterface::CATEGORIES => [],
-            CreateCarInterface::CHAIRS => [],
-//            CreateCarInterface::CHASSIS => null,
-            CreateCarInterface::COLOR => 'Черный',//todo
-            CreateCarInterface::LOG_TIME => 350, //todo: what is it?
-//            CreateCarInterface::MODEL => null,
-//            CreateCarInterface::NUMBER => null,
-//            CreateCarInterface::PARK_ID => null,
-            CreateCarInterface::PERMIT => null,
-            CreateCarInterface::REGISTRATION_CERT => '1111111',
-            CreateCarInterface::RENTAL => null,
-            CreateCarInterface::STATUS => 'working',//todo
-            CreateCarInterface::TARIFFS => [],
-            CreateCarInterface::TRANSMISSION => 'unknown',
-//            CreateCarInterface::VIN => null,
-            CreateCarInterface::YEAR => 2017,
-        ];
     }
 
     private function getMappedValues(array $data)
     {
         $mapping = [
-//            CreateCarInterface::AMENITIES => [],
-//            CreateCarInterface::BODY_NUMBER => null,
+// used
+
 //            CreateCarInterface::BOOSTER_COUNT => 0,
             CreateCarInterface::BRAND => FrontCarInterface::BRAND,
 //            CreateCarInterface::CALLSIGN => 'тест',
-//            CreateCarInterface::CARGO_HOLD_DIMENSIONS => $this->getCargoHoldDimensions($row),
 //            CreateCarInterface::CARGO_LOADERS => 0,
+            CreateCarInterface::COLOR => FrontCarInterface::COLOR,
+            CreateCarInterface::MODEL => FrontCarInterface::MODEL,
+            CreateCarInterface::NUMBER => FrontCarInterface::NUMBER,
+//            CreateCarInterface::PARK_ID => null,
+            CreateCarInterface::REGISTRATION_CERT => FrontCarInterface::REGISTRATION,
+//            CreateCarInterface::STATUS => 'working',
+//            CreateCarInterface::TRANSMISSION => 'unknown',
+            CreateCarInterface::VIN => FrontCarInterface::VIN,
+            CreateCarInterface::YEAR => FrontCarInterface::ISSUE_YEAR,
+
+// not used
+//            CreateCarInterface::AMENITIES => [],
+//            CreateCarInterface::BODY_NUMBER => null,
+//            CreateCarInterface::CARGO_HOLD_DIMENSIONS => $this->getCargoHoldDimensions($row),
 //            CreateCarInterface::CARRIER_PERMIT_OWNER_ID => null,
 //            CreateCarInterface::CARRYING_CAPACITY => null,
 //            CreateCarInterface::CATEGORIES => [],
 //            CreateCarInterface::CHAIRS => [],
 //            CreateCarInterface::CHASSIS => null,
-//            CreateCarInterface::COLOR => 'Черный',//todo
 //            CreateCarInterface::LOG_TIME => 350, //todo: what is it?
-            CreateCarInterface::MODEL => FrontCarInterface::MODEL,
-            CreateCarInterface::NUMBER => FrontCarInterface::NUMBER,
-//            CreateCarInterface::PARK_ID => null,
 //            CreateCarInterface::PERMIT => null,
-//            CreateCarInterface::REGISTRATION_CERT => null,
 //            CreateCarInterface::RENTAL => null,
-//            CreateCarInterface::STATUS => 'working',//todo
 //            CreateCarInterface::TARIFFS => [],
-//            CreateCarInterface::TRANSMISSION => 'unknown',
-            CreateCarInterface::VIN => FrontCarInterface::VIN,
-//            CreateCarInterface::YEAR => 2017,
         ];
 
         return $this->getValuesByRowNamesMapping($data, $mapping);
     }
 
-    private function getCalculatedValues(array $data, string $parkId)
+    private function getCalculatedValues(array $data)
     {
         return [
-            CreateCarInterface::PARK_ID => $parkId,
         ];//todo
     }
 

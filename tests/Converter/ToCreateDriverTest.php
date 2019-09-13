@@ -3,7 +3,7 @@
 namespace Likemusic\YandexFleetTaxi\FrontendData\ToYandexClientPostDataConverters\Tests\Converter;
 
 use Likemusic\YandexFleetTaxi\FrontendData\ToYandexClientPostDataConverters\Converter\ToCreateDriver as ToCreateDriverConverter;
-use Likemusic\YandexFleetTaxi\FrontendData\ToYandexClientPostDataConverters\Tests\Converter\Fixture;
+use Likemusic\YandexFleetTaxi\FrontendData\ToYandexClientPostDataConverters\Tests\Converter\Fixture\DriverInterface;
 
 class ToCreateDriverTest extends Base
 {
@@ -26,7 +26,7 @@ class ToCreateDriverTest extends Base
 
     private function getExpectedDriverPostData()
     {
-        $expectedDriverData = Fixture::EXPECTED_CREATE_DRIVER_DATA;
+        $expectedDriverData = DriverInterface::EXPECTED_DATA;
         $expectedDriverData['driver_profile']['hire_date'] = date('Y-m-d');
 
         return $expectedDriverData;
