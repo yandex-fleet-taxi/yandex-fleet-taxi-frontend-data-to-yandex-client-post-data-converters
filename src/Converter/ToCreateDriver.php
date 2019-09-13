@@ -27,21 +27,6 @@ class ToCreateDriver extends Base
         ];
     }
 
-    private function getCalculatedValues($data)
-    {
-        return [
-            CreateDriverInterface::DRIVER_PROFILE => $this->getCalculatedValuesDriver($data),
-        ];
-    }
-
-    private function getDriverPostDataDriverProfile(array $data)
-    {
-        $mappedValues = $this->getMappedValuesDriver($data);
-        $calculatedValues = $this->getCalculatedValuesDriver($data);
-
-        return array_replace_recursive($mappedValues, $calculatedValues);
-    }
-
     private function getMappedValuesDriver(array $data)
     {
         $mapping = [
@@ -65,6 +50,13 @@ class ToCreateDriver extends Base
         ];
 
         return $this->getValuesByRowNamesMapping($data, $mapping);
+    }
+
+    private function getCalculatedValues($data)
+    {
+        return [
+            CreateDriverInterface::DRIVER_PROFILE => $this->getCalculatedValuesDriver($data),
+        ];
     }
 
     private function getCalculatedValuesDriver(array $data): array
@@ -116,7 +108,7 @@ class ToCreateDriver extends Base
         }
 
         if ($expirationDate = $this->getExpirationDate($data)) {
-            $ret[DriverLicenceInterface::EXPIRATION_DATE ] = $expirationDate;
+            $ret[DriverLicenceInterface::EXPIRATION_DATE] = $expirationDate;
         }
 
         if ($issueDate = $this->getIssueDate($data)) {
@@ -138,6 +130,30 @@ class ToCreateDriver extends Base
 //        ];
     }
 
+    private function getDriverBirthDate(array $data): ?string
+    {
+        return $this->getClientDataByKey($data, FrontDriverInterface::BIRTH_DATE);
+    }
+
+    private function getClientDataByKey(array $data, string $key)
+    {
+        if (!isset($data[$key])) {
+            return null;
+        }
+
+        $sheetValue = $data[$key];
+
+        return $this->getClientDateByTildaDate($sheetValue);
+    }
+
+    private function getClientDateByTildaDate(string $sheetDate): string
+    {
+        $chunks = explode('.', $sheetDate);
+
+        $chunks = array_reverse($chunks);
+
+        return implode('-', $chunks);
+    }
 
     private function getDriverLicenceIssueCountry(array $data)
     {
@@ -160,7 +176,7 @@ class ToCreateDriver extends Base
             //todo
 //            'Абхазия',
 //            'Южная Осетия'
-        //todo: Что со всеми остальными странами?
+            //todo: Что со всеми остальными странами?
         ];
 
         if (!array_key_exists($frontCountry, $mapping)) {
@@ -170,39 +186,9 @@ class ToCreateDriver extends Base
         return $mapping[$frontCountry];
     }
 
-    private function getDriverBirthDate(array $data): ?string
-    {
-        return $this->getClientDataByKey($data, FrontDriverInterface::BIRTH_DATE);
-    }
-
-    private function getClientDataByKey(array $data, string $key)
-    {
-        if (!isset($data[$key])) {
-            return null;
-        }
-
-        $sheetValue = $data[$key];
-
-        return $this->getClientDateByTildaDate($sheetValue);
-    }
-
-    private function getHireDate()
-    {
-        return date('Y-m-d');
-    }
-
     private function getExpirationDate(array $data): ?string
     {
         return $this->getClientDataByKey($data, FrontDriverLicenseInterface::EXPIRATION_DATE);
-    }
-
-    private function getClientDateByTildaDate(string $sheetDate):string
-    {
-        $chunks = explode('.', $sheetDate);
-
-        $chunks = array_reverse($chunks);
-
-        return implode('-', $chunks);
     }
 
     private function getIssueDate(array $data): ?string
@@ -255,18 +241,8 @@ class ToCreateDriver extends Base
         return "+{$phone}";
     }
 
-    private function getDriverLicenceCountry($rowNames, $row)
+    private function getHireDate()
     {
-        //todo
-        $countryRu = $this->getValueByRowName($rowNames, $row, FrontDriverLicenseInterface::ISSUE_COUNTRY);
-
-        return $this->getDriverLicenceCountryCodeByCountryRussianName($countryRu);
-    }
-
-    private function getDriverPostDataDriverProfileProviders($row)
-    {
-        return [
-            'yandex',//todo
-        ];
+        return date('Y-m-d');
     }
 }
