@@ -8,23 +8,15 @@ use Likemusic\YandexFleetTaxiClient\Contracts\PostDataKey\CreateDriver\DriverPro
 interface CarInterface
 {
     const TEST_DEFAULT_CRATE_CAR_DATA = [
-    // used
-        CreateCarInterface::BOOSTER_COUNT => 0,
-//            CreateCarInterface::BRAND => null,
-        CreateCarInterface::CALLSIGN => 'тест',
-        CreateCarInterface::CARGO_LOADERS => 0,
-//        CreateCarInterface::COLOR => 'Черный',//todo
-//            CreateCarInterface::MODEL => null,
-//            CreateCarInterface::NUMBER => null,
-        CreateCarInterface::PARK_ID => '8d40b7c41af544afa0499b9d0bdf2430',
-//        CreateCarInterface::REGISTRATION_CERT => '1111111',
-        CreateCarInterface::STATUS => 'working',//todo
-        CreateCarInterface::TRANSMISSION => 'unknown',
-//            CreateCarInterface::VIN => null,
-//        CreateCarInterface::YEAR => 2017,
+        // used
+        'booster_count' => 0,
+        'callsign' => 'тест',
+        'cargo_loaders' => 0,
+        'park_id' => '8d40b7c41af544afa0499b9d0bdf2430',
+        'status' => 'working',//todo
+        'transmission' => 'unknown',
 
-
-    // not used
+        // not used
 //        CreateCarInterface::AMENITIES => [],
 
 //        CreateCarInterface::BODY_NUMBER => null,
