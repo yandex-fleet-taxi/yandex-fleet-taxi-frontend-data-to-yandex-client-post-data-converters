@@ -33,7 +33,7 @@ class ToCreateCar extends Base
 //            CreateCarInterface::STATUS => 'working',
 //            CreateCarInterface::TRANSMISSION => 'unknown',
             CreateCarInterface::VIN => FrontCarInterface::VIN,
-            CreateCarInterface::YEAR => FrontCarInterface::ISSUE_YEAR,
+//            CreateCarInterface::YEAR => FrontCarInterface::ISSUE_YEAR,
 
 // not used
 //            CreateCarInterface::AMENITIES => [],
@@ -56,7 +56,8 @@ class ToCreateCar extends Base
     private function getCalculatedValues(array $data)
     {
         return [
-        ];//todo
+            CreateCarInterface::YEAR => (int) $data[FrontCarInterface::ISSUE_YEAR],
+        ];
     }
 
     private function getTariffs(array $row): array
