@@ -2,12 +2,20 @@
 
 namespace Likemusic\YandexFleetTaxi\FrontendData\ToYandexClientPostDataConverters\Converter;
 
+use InvalidArgumentException;
 use Likemusic\YandexFleetTaxi\FrontendData\Contracts\CarInterface as FrontCarInterface;
 use Likemusic\YandexFleetTaxiClient\Contracts\PostDataKey\CreateCar\CargoHoldDimensionsInterface;
 use Likemusic\YandexFleetTaxiClient\Contracts\PostDataKey\CreateCarInterface;
+use Likemusic\YandexFleetTaxi\FrontendData\Contracts\Car\BrandingInterface as FrontBrandingInterface;
+use Likemusic\YandexFleetTaxiClient\Contracts\PostDataKey\CreateCar\AmenityInterface as YandexAmenityInterface;
 
 class ToCreateCar extends Base
 {
+    const AMENITIES_MAPPING = [
+        FrontBrandingInterface::LIGHTBOX => YandexAmenityInterface::STICKER,
+        FrontBrandingInterface::STICKER => YandexAmenityInterface::LIGHTBOX,
+    ];
+
     public function convert(array $data, $defaultValues = []): array
     {
         $mappedValues = $this->getMappedValues($data);
@@ -55,9 +63,50 @@ class ToCreateCar extends Base
 
     private function getCalculatedValues(array $data)
     {
-        return [
+        $calculatedValues = [
             CreateCarInterface::YEAR => (int) $data[FrontCarInterface::ISSUE_YEAR],
         ];
+
+        if ($amenities = $this->getCalculatedAmenities($data)) {
+            $calculatedValues[CreateCarInterface::AMENITIES] = $amenities;
+        }
+
+        return $calculatedValues;
+    }
+
+    private function getCalculatedAmenities(array $data)
+    {
+        $carBranding = (isset($data[FrontCarInterface::BRANDING])) ? $data[FrontCarInterface::BRANDING] : null;
+
+        if (!$carBranding) {
+            return null;
+        }
+
+        return $this->getAmenitiesByCarBrandingString($carBranding);
+    }
+
+    private function getAmenitiesByCarBrandingString(string $carBranding)
+    {
+        $chunks = explode(';', $carBranding);
+        $chunks = array_map('trim', $chunks);
+
+        return $this->getAmenitiesByFrontBrandingItems($chunks);
+    }
+
+    private function getAmenitiesByFrontBrandingItems(array $items)
+    {
+        return array_map([$this, 'getAmenityByFrontBrandingItem'], $items);
+    }
+
+    private function getAmenityByFrontBrandingItem(string $item)
+    {
+        $mapping = self::AMENITIES_MAPPING;
+
+        if (!array_key_exists($item, $mapping)) {
+            throw new InvalidArgumentException("Invalid branding item value: {$item}");
+        }
+
+        return $mapping[$item];
     }
 
     private function getTariffs(array $row): array

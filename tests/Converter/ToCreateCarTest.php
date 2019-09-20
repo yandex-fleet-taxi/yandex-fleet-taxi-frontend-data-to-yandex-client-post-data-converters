@@ -13,7 +13,6 @@ class ToCreateCarTest extends Base
         $testDefaultValues = $this->getTestDefaultValues();
 
         $converter = new ToCreateCarConverter();
-        $parkId = '8d40b7c41af544afa0499b9d0bdf2430';
         $carPostData = $converter->convert($testData, $testDefaultValues);
 
         $this->assertIsArray($carPostData);

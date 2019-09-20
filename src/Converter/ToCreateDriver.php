@@ -54,9 +54,11 @@ class ToCreateDriver extends Base
 
     private function getCalculatedValues($data)
     {
-        return [
+        $calculatedValues = [
             CreateDriverInterface::DRIVER_PROFILE => $this->getCalculatedValuesDriver($data),
         ];
+
+        return $calculatedValues;
     }
 
     private function getCalculatedValuesDriver(array $data): array

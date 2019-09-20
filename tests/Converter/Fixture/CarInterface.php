@@ -46,9 +46,11 @@ interface CarInterface
         'transmission' => 'unknown',
         'vin' => '1C3EL46U91N594161',
         'year' => 2008,
-//        'amenities' =>
-//            [
-//            ],
+        'amenities' =>
+            [
+                'sticker',
+                'lightbox'
+            ],
 //        'body_number' => NULL,
 //        'carrier_permit_owner_id' => NULL,
 //        'carrying_capacity' => NULL,
