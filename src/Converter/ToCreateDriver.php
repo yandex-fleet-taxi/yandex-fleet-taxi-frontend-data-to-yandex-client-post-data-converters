@@ -115,7 +115,7 @@ class ToCreateDriver extends Base
             $ret[DriverLicenceInterface::ISSUE_DATE] = $issueDate;
         }
 
-        if ($number = $this->getDriverLicenceNumber($data)) {
+        if ($number = $this->getDriverLicenceNumberWithSeries($data)) {
             $ret[DriverLicenceInterface::NUMBER] = $number;
         }
 
@@ -196,18 +196,26 @@ class ToCreateDriver extends Base
         return $this->getClientDataByKey($data, FrontDriverLicenseInterface::ISSUE_DATE);
     }
 
-    public function getDriverLicenceNumber($data): ?string
+    public function getDriverLicenceNumberWithSeries($data): ?string
     {
-        //todo: использовать серию из отдельного поля?
 
-        //$series = $data[FrontDriverLicenseInterface::SERIES];
-        if (!isset($data[FrontDriverLicenseInterface::NUMBER])) {
-            return null;
-        }
+        $series = isset($data[FrontDriverLicenseInterface::SERIES])
+            ? $data[FrontDriverLicenseInterface::SERIES]
+            : ''
+        ;
 
-        $number = $data[FrontDriverLicenseInterface::NUMBER];
+        $number = isset($data[FrontDriverLicenseInterface::NUMBER])
+            ? $data[FrontDriverLicenseInterface::NUMBER]
+            : '';
 
-        return "{$number}";
+        $seriesAndNumber = $series. $number;
+
+        return $this->removeSpaces($seriesAndNumber);
+    }
+
+    private function removeSpaces($str)
+    {
+        return preg_replace('/\s+/', '', $str);
     }
 
     public function getDriverPhones($data): ?array

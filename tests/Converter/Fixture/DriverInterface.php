@@ -15,7 +15,7 @@ interface DriverInterface
                 'driver_license' =>
                     [
                         'country' => 'rus',
-                        'number' => '32132132',
+                        'number' => 'OA32132132',
                         'expiration_date' => '2019-09-20',
                         'issue_date' => '2019-09-01',
                         'birth_date' => '1985-02-01',
