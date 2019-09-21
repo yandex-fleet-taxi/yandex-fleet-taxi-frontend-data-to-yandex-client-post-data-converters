@@ -3,6 +3,7 @@
 namespace Likemusic\YandexFleetTaxi\FrontendData\ToYandexClientPostDataConverters\Converter;
 
 use Likemusic\YandexFleetTaxi\FrontendData\Contracts\DriverInterface as FrontDriverInterface;
+use Likemusic\YandexFleetTaxi\FrontendData\Contracts\DriverInterface;
 use Likemusic\YandexFleetTaxi\FrontendData\Contracts\DriverLicense\IssueCountryInterface as FrontDriverLicenseIssueCountryInterface;
 use Likemusic\YandexFleetTaxi\FrontendData\Contracts\DriverLicenseInterface as FrontDriverLicenseInterface;
 use Likemusic\YandexFleetTaxiClient\Contracts\PostDataKey\CreateDriver\DriverProfile\DriverLicenceInterface;
@@ -73,28 +74,33 @@ class ToCreateDriver extends Base
             $ret[DriverProfileInterface::PHONES] = $phones;
         }
 
+        if ($comment = $this->getDriverComment($data)) {
+            $ret[DriverProfileInterface::COMMENT] = $comment;
+        }
+
         $ret[DriverProfileInterface::HIRE_DATE] = $this->getHireDate();
 
         return $ret;
+    }
 
-//        return [
-//            DriverProfileInterface::ADDRESS => null,
-//            DriverProfileInterface::CAR_ID => null,
-//            DriverProfileInterface::CHECK_MESSAGE => null,
-//            DriverProfileInterface::COMMENT => null,
-//            DriverProfileInterface::DEAF => null,
-//            DriverProfileInterface::DRIVER_LICENSE => $this->getDriverLicencePostData($data),
-//            DriverProfileInterface::EMAIL => null,
-//            DriverProfileInterface::FIRE_DATE => null,
-//            DriverProfileInterface::FIRST_NAME => null,
-//            DriverProfileInterface::HIRE_DATE => null,
-//            DriverProfileInterface::LAST_NAME => null,
-//            DriverProfileInterface::MIDDLE_NAME => null,
-//            DriverProfileInterface::PHONES => $this->getDriverPostDataDriverProfilePhones($data),
-//            DriverProfileInterface::PROVIDERS => $this->getDriverPostDataDriverProfileProviders($row),
-//            DriverProfileInterface::WORK_RULE_ID => null,
-//            DriverProfileInterface::WORK_STATUS => null,
-//        ];
+    private function getDriverComment(array $data)
+    {
+        if (!$whatsAppPhone = $this->getWhatsAppPhone($data)) {
+            return null;
+        }
+
+        $sanitizedPhone = $this->sanitizePhone($whatsAppPhone);
+
+        return "[whatsapp:{$sanitizedPhone}]";
+    }
+
+    private function getWhatsAppPhone(array $data)
+    {
+        if (!isset($data[DriverInterface::WHATSAPP_PHONE])) {
+            return null;
+        }
+
+        return $data[DriverInterface::WHATSAPP_PHONE];
     }
 
     private function getDriverLicencePostData($data)
