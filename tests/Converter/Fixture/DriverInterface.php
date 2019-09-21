@@ -12,6 +12,7 @@ interface DriverInterface
             ],
         'driver_profile' =>
             [
+                'address' => 'Борисов',
                 'driver_license' =>
                     [
                         'country' => 'rus',

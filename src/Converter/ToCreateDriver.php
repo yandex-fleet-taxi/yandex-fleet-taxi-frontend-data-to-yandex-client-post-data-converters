@@ -31,23 +31,10 @@ class ToCreateDriver extends Base
     private function getMappedValuesDriver(array $data)
     {
         $mapping = [
-//            DriverProfileInterface::ADDRESS => null,
-//            DriverProfileInterface::CAR_ID => null,
-//            DriverProfileInterface::CHECK_MESSAGE => null,
-//            DriverProfileInterface::COMMENT => null,
-//            DriverProfileInterface::DEAF => null,
-//            DriverProfileInterface::DRIVER_LICENSE => $this->getDriverPostDataDriverProfileDriverLicence($row),
-//            DriverProfileInterface::EMAIL => null,
-//            DriverProfileInterface::FIRE_DATE => null,
+            DriverProfileInterface::ADDRESS => FrontDriverInterface::WORK_CITY,
             DriverProfileInterface::FIRST_NAME => FrontDriverInterface::FIRST_NAME,
-//            DriverProfileInterface::HIRE_DATE => null,
             DriverProfileInterface::LAST_NAME => FrontDriverInterface::LAST_NAME,
             DriverProfileInterface::MIDDLE_NAME => FrontDriverInterface::MIDDLE_NAME,
-//            DriverProfileInterface::PHONES => $this->getDriverPostDataDriverProfilePhones($row),
-//            DriverProfileInterface::PROVIDERS => $this->getDriverPostDataDriverProfileProviders($row),
-//            DriverProfileInterface::WORK_RULE_ID => null,
-//            DriverProfileInterface::WORK_STATUS => null,
-
         ];
 
         return $this->getValuesByRowNamesMapping($data, $mapping);
