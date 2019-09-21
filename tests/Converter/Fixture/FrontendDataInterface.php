@@ -7,7 +7,7 @@ interface FrontendDataInterface
 {
     const FRONT_DATA = [
         'driver_work_phone' => '+7 (753) 330-12-95',
-        'driver_whatsapp_phone' => '+7 (753) 330-12-95',
+        'driver_whatsapp_phone' => '+7 (753) 330-12-96',
         'driver_work_city' => 'Borisov',
         'driver_work_timezone' => '+0 Москва',
         'licence_issue_country' => 'Россия',
