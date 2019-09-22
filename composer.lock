@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:likemusic/yandex-fleet-taxi-client-contracts.git",
-                "reference": "80ed0c33e22ad02438bcc3a14648022c7a0e65b1"
+                "reference": "655e40786007c504f99558911bc0d1111b8da640"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/likemusic/yandex-fleet-taxi-client-contracts/zipball/80ed0c33e22ad02438bcc3a14648022c7a0e65b1",
-                "reference": "80ed0c33e22ad02438bcc3a14648022c7a0e65b1",
+                "url": "https://api.github.com/repos/likemusic/yandex-fleet-taxi-client-contracts/zipball/655e40786007c504f99558911bc0d1111b8da640",
+                "reference": "655e40786007c504f99558911bc0d1111b8da640",
                 "shasum": ""
             },
             "require": {
@@ -43,7 +43,7 @@
                 "source": "https://github.com/likemusic/yandex-fleet-taxi-client-contracts/tree/master",
                 "issues": "https://github.com/likemusic/yandex-fleet-taxi-client-contracts/issues"
             },
-            "time": "2019-09-21T13:58:28+00:00"
+            "time": "2019-09-21T23:08:00+00:00"
         },
         {
             "name": "likemusic/yandex-fleet-taxi-frontend-data-contracts",
@@ -51,12 +51,12 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:likemusic/yandex-fleet-taxi-frontend-data-contracts.git",
-                "reference": "d5d8caea100876b57f3f54a22f032d7744eeb5c1"
+                "reference": "d9035d5bd66915848ffaf84017fba262bd4cf9d4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/likemusic/yandex-fleet-taxi-frontend-data-contracts/zipball/d5d8caea100876b57f3f54a22f032d7744eeb5c1",
-                "reference": "d5d8caea100876b57f3f54a22f032d7744eeb5c1",
+                "url": "https://api.github.com/repos/likemusic/yandex-fleet-taxi-frontend-data-contracts/zipball/d9035d5bd66915848ffaf84017fba262bd4cf9d4",
+                "reference": "d9035d5bd66915848ffaf84017fba262bd4cf9d4",
                 "shasum": ""
             },
             "require": {
@@ -82,7 +82,7 @@
                 "source": "https://github.com/likemusic/yandex-fleet-taxi-frontend-data-contracts/tree/master",
                 "issues": "https://github.com/likemusic/yandex-fleet-taxi-frontend-data-contracts/issues"
             },
-            "time": "2019-09-21T21:45:35+00:00"
+            "time": "2019-09-22T12:37:49+00:00"
         }
     ],
     "packages-dev": [
