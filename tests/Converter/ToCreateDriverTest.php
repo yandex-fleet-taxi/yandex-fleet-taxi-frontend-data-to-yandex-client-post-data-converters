@@ -4,6 +4,7 @@ namespace Likemusic\YandexFleetTaxi\FrontendData\ToYandexClientPostDataConverter
 
 use Likemusic\YandexFleetTaxi\FrontendData\ToYandexClientPostDataConverters\Converter\ToCreateDriver as ToCreateDriverConverter;
 use Likemusic\YandexFleetTaxi\FrontendData\ToYandexClientPostDataConverters\Tests\Converter\Fixture\DriverInterface;
+use Likemusic\YandexFleetTaxi\FrontendData\ToYandexClientPostDataConverters\Converter\ToCreateDriver\DriverLicenceIssueCountry as IssueCountryConverter;
 
 class ToCreateDriverTest extends Base
 {
@@ -11,11 +12,22 @@ class ToCreateDriverTest extends Base
     {
         $testData = $this->getTestData();
         $defaultValues = $this->getTestDefaultValues();
-        $converter = new ToCreateDriverConverter();
+
+        $issueCountryConverter = $this->getTestIssueCountryConverter();
+        $converter = new ToCreateDriverConverter($issueCountryConverter);
         $driverPostData = $converter->convert($testData, $defaultValues);
 
         $expectedDriverPostData = $this->getExpectedDriverPostData();
         $this->assertEquals($expectedDriverPostData, $driverPostData);
+    }
+
+    private function getTestIssueCountryConverter()
+    {
+        $countries = [
+            'rus' => 'Россия'
+        ];
+
+        return new IssueCountryConverter($countries);
     }
 
     private function getTestDefaultValues()

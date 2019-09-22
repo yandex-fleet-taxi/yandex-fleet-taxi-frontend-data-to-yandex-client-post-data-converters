@@ -2,17 +2,26 @@
 
 namespace Likemusic\YandexFleetTaxi\FrontendData\ToYandexClientPostDataConverters\Converter;
 
-use Likemusic\YandexFleetTaxi\FrontendData\Contracts\DriverInterface as FrontDriverInterface;
 use Likemusic\YandexFleetTaxi\FrontendData\Contracts\DriverInterface;
-use Likemusic\YandexFleetTaxi\FrontendData\Contracts\DriverLicense\IssueCountryInterface as FrontDriverLicenseIssueCountryInterface;
+use Likemusic\YandexFleetTaxi\FrontendData\Contracts\DriverInterface as FrontDriverInterface;
 use Likemusic\YandexFleetTaxi\FrontendData\Contracts\DriverLicenseInterface as FrontDriverLicenseInterface;
 use Likemusic\YandexFleetTaxiClient\Contracts\PostDataKey\CreateDriver\DriverProfile\DriverLicenceInterface;
 use Likemusic\YandexFleetTaxiClient\Contracts\PostDataKey\CreateDriver\DriverProfileInterface;
 use Likemusic\YandexFleetTaxiClient\Contracts\PostDataKey\CreateDriverInterface;
-use Likemusic\YandexFleetTaxiClient\Contracts\References\DriverLicenseIssueCountryCodeInterface;
+use Likemusic\YandexFleetTaxi\FrontendData\ToYandexClientPostDataConverters\Converter\ToCreateDriver\DriverLicenceIssueCountry as IssueCountryConverter;
 
 class ToCreateDriver extends Base
 {
+    /**
+     * @var IssueCountryConverter
+     */
+    private $issueCountryConverter;
+
+    public function __construct(IssueCountryConverter $issueCountryConverter)
+    {
+        $this->issueCountryConverter = $issueCountryConverter;
+    }
+
     public function convert(array $data, $defaultValues): array
     {
         $mappedValues = $this->getMappedValues($data);
@@ -35,6 +44,15 @@ class ToCreateDriver extends Base
             DriverProfileInterface::FIRST_NAME => FrontDriverInterface::FIRST_NAME,
             DriverProfileInterface::LAST_NAME => FrontDriverInterface::LAST_NAME,
             DriverProfileInterface::MIDDLE_NAME => FrontDriverInterface::MIDDLE_NAME,
+        ];
+
+        return $this->getValuesByRowNamesMapping($data, $mapping);
+    }
+
+    private function getMappedDriverLicenceValues(array $data)
+    {
+        $mapping = [
+            DriverLicenceInterface::COUNTRY => FrontDriverLicenseInterface::ISSUE_COUNTRY,
         ];
 
         return $this->getValuesByRowNamesMapping($data, $mapping);
@@ -70,36 +88,12 @@ class ToCreateDriver extends Base
         return $ret;
     }
 
-    private function getDriverComment(array $data)
-    {
-        if (!$whatsAppPhone = $this->getWhatsAppPhone($data)) {
-            return null;
-        }
-
-        $sanitizedPhone = $this->sanitizePhone($whatsAppPhone);
-
-        return "[whatsapp:{$sanitizedPhone}]";
-    }
-
-    private function getWhatsAppPhone(array $data)
-    {
-        if (!isset($data[DriverInterface::WHATSAPP_PHONE])) {
-            return null;
-        }
-
-        return $data[DriverInterface::WHATSAPP_PHONE];
-    }
-
     private function getDriverLicencePostData($data)
     {
         $ret = [];
 
         if ($birthData = $this->getDriverBirthDate($data)) {
             $ret[DriverLicenceInterface::BIRTH_DATE] = $birthData;
-        }
-
-        if ($country = $this->getDriverLicenceIssueCountry($data)) {
-            $ret[DriverLicenceInterface::COUNTRY] = $country;
         }
 
         if ($expirationDate = $this->getExpirationDate($data)) {
@@ -110,19 +104,31 @@ class ToCreateDriver extends Base
             $ret[DriverLicenceInterface::ISSUE_DATE] = $issueDate;
         }
 
+        if ($issueCountry = $this->getIssueCountry($data)) {
+            $ret[DriverLicenceInterface::COUNTRY] = $issueCountry;
+        }
+
         if ($number = $this->getDriverLicenceNumber($data)) {
             $ret[DriverLicenceInterface::NUMBER] = $number;
         }
 
         return $ret;
+    }
 
-//        return [
-//            DriverLicenceInterface::BIRTH_DATE => null,
-//            DriverLicenceInterface::COUNTRY => 'rus',//$this->getDriverLicenceCountry($rowNames, $row),
-//            DriverLicenceInterface::EXPIRATION_DATE => $this->getExpirationDate($data),
-//            DriverLicenceInterface::ISSUE_DATE => $this->getIssueDate($data),
-//            DriverLicenceInterface::NUMBER => $this->getDriverLicenceNumber($data),
-//        ];
+    private function getIssueCountry(array $data)
+    {
+        if (!isset($data[FrontDriverLicenseInterface::ISSUE_COUNTRY])) {
+            return null;
+        }
+
+        $frontIssueCountry = $data[FrontDriverLicenseInterface::ISSUE_COUNTRY];
+
+        return $this->getYandexDriverLicenceCountryByFrontValue($frontIssueCountry);
+    }
+
+    private function getYandexDriverLicenceCountryByFrontValue(string $frontIssueCountry): string
+    {
+        return $this->issueCountryConverter->convert($frontIssueCountry);
     }
 
     private function getDriverBirthDate(array $data): ?string
@@ -148,37 +154,6 @@ class ToCreateDriver extends Base
         $chunks = array_reverse($chunks);
 
         return implode('-', $chunks);
-    }
-
-    private function getDriverLicenceIssueCountry(array $data)
-    {
-        if (!isset($data[FrontDriverLicenseInterface::ISSUE_COUNTRY])) {
-            return null;
-        }
-
-        $frontCountry = $data[FrontDriverLicenseInterface::ISSUE_COUNTRY];
-
-        return $this->getYandexClientCountryCodeByFrontCountry($frontCountry);
-    }
-
-    private function getYandexClientCountryCodeByFrontCountry($frontCountry)
-    {
-        $mapping = [
-            FrontDriverLicenseIssueCountryInterface::RUSSIA => DriverLicenseIssueCountryCodeInterface::RUSSIA,
-            FrontDriverLicenseIssueCountryInterface::BELARUS => DriverLicenseIssueCountryCodeInterface::BELARUS,
-            FrontDriverLicenseIssueCountryInterface::KAZAKHSTAN => DriverLicenseIssueCountryCodeInterface::KAZAKHSTAN,
-            FrontDriverLicenseIssueCountryInterface::KYRGYZSTAN => DriverLicenseIssueCountryCodeInterface::KYRGYZSTAN,
-            //todo
-//            'Абхазия',
-//            'Южная Осетия'
-            //todo: Что со всеми остальными странами?
-        ];
-
-        if (!array_key_exists($frontCountry, $mapping)) {
-            throw new \InvalidArgumentException('Unknown frontend county name: ' . $frontCountry);
-        }
-
-        return $mapping[$frontCountry];
     }
 
     private function getExpirationDate(array $data): ?string
@@ -236,6 +211,26 @@ class ToCreateDriver extends Base
         $phone = preg_replace('/[^0-9]/', '', $rawPhone);
 
         return "+{$phone}";
+    }
+
+    private function getDriverComment(array $data)
+    {
+        if (!$whatsAppPhone = $this->getWhatsAppPhone($data)) {
+            return null;
+        }
+
+        $sanitizedPhone = $this->sanitizePhone($whatsAppPhone);
+
+        return "[whatsapp:{$sanitizedPhone}]";
+    }
+
+    private function getWhatsAppPhone(array $data)
+    {
+        if (!isset($data[DriverInterface::WHATSAPP_PHONE])) {
+            return null;
+        }
+
+        return $data[DriverInterface::WHATSAPP_PHONE];
     }
 
     private function getHireDate()
