@@ -5,10 +5,10 @@ namespace Likemusic\YandexFleetTaxi\FrontendData\ToYandexClientPostDataConverter
 use Likemusic\YandexFleetTaxi\FrontendData\Contracts\DriverInterface;
 use Likemusic\YandexFleetTaxi\FrontendData\Contracts\DriverInterface as FrontDriverInterface;
 use Likemusic\YandexFleetTaxi\FrontendData\Contracts\DriverLicenseInterface as FrontDriverLicenseInterface;
+use Likemusic\YandexFleetTaxi\FrontendData\ToYandexClientPostDataConverters\Converter\ToCreateDriver\DriverLicenceIssueCountry as IssueCountryConverter;
 use Likemusic\YandexFleetTaxiClient\Contracts\PostDataKey\CreateDriver\DriverProfile\DriverLicenceInterface;
 use Likemusic\YandexFleetTaxiClient\Contracts\PostDataKey\CreateDriver\DriverProfileInterface;
 use Likemusic\YandexFleetTaxiClient\Contracts\PostDataKey\CreateDriverInterface;
-use Likemusic\YandexFleetTaxi\FrontendData\ToYandexClientPostDataConverters\Converter\ToCreateDriver\DriverLicenceIssueCountry as IssueCountryConverter;
 
 class ToCreateDriver extends Base
 {
@@ -44,15 +44,6 @@ class ToCreateDriver extends Base
             DriverProfileInterface::FIRST_NAME => FrontDriverInterface::FIRST_NAME,
             DriverProfileInterface::LAST_NAME => FrontDriverInterface::LAST_NAME,
             DriverProfileInterface::MIDDLE_NAME => FrontDriverInterface::MIDDLE_NAME,
-        ];
-
-        return $this->getValuesByRowNamesMapping($data, $mapping);
-    }
-
-    private function getMappedDriverLicenceValues(array $data)
-    {
-        $mapping = [
-            DriverLicenceInterface::COUNTRY => FrontDriverLicenseInterface::ISSUE_COUNTRY,
         ];
 
         return $this->getValuesByRowNamesMapping($data, $mapping);
@@ -115,22 +106,6 @@ class ToCreateDriver extends Base
         return $ret;
     }
 
-    private function getIssueCountry(array $data)
-    {
-        if (!isset($data[FrontDriverLicenseInterface::ISSUE_COUNTRY])) {
-            return null;
-        }
-
-        $frontIssueCountry = $data[FrontDriverLicenseInterface::ISSUE_COUNTRY];
-
-        return $this->getYandexDriverLicenceCountryByFrontValue($frontIssueCountry);
-    }
-
-    private function getYandexDriverLicenceCountryByFrontValue(string $frontIssueCountry): string
-    {
-        return $this->issueCountryConverter->convert($frontIssueCountry);
-    }
-
     private function getDriverBirthDate(array $data): ?string
     {
         return $this->getClientDataByKey($data, FrontDriverInterface::BIRTH_DATE);
@@ -164,6 +139,22 @@ class ToCreateDriver extends Base
     private function getIssueDate(array $data): ?string
     {
         return $this->getClientDataByKey($data, FrontDriverLicenseInterface::ISSUE_DATE);
+    }
+
+    private function getIssueCountry(array $data)
+    {
+        if (!isset($data[FrontDriverLicenseInterface::ISSUE_COUNTRY])) {
+            return null;
+        }
+
+        $frontIssueCountry = $data[FrontDriverLicenseInterface::ISSUE_COUNTRY];
+
+        return $this->getYandexDriverLicenceCountryByFrontValue($frontIssueCountry);
+    }
+
+    private function getYandexDriverLicenceCountryByFrontValue(string $frontIssueCountry): string
+    {
+        return $this->issueCountryConverter->convert($frontIssueCountry);
     }
 
     public function getDriverLicenceNumber($data): ?string
